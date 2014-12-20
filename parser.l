@@ -1,0 +1,89 @@
+%{
+#include <stdlib.h>
+#include "parser.tab.h"
+%}
+%x COM
+%x OBJECT
+%x OBJECTDICT
+%x STREAM
+%x TRAILER
+%x COMM
+%x TRAILERDICT
+%x LINEADICT
+%x LINEADICTOBJ
+%x ZONASTRLITERAL
+%x ZONASTRHEXADECIMAL
+COMMENT "%"
+END {COMMENT}{2}EOF
+EOL \n
+DIGITO[0-9]
+XREF "xref"
+TRAIL "trailer"
+STARTXREF "startxref"
+OBJ obj
+ENDOBJ endobj
+STR stream
+ENDSTR endstream
+BOOL "true"|"false"
+NUMERO {DIGITO}+
+FLOAT {NUMERO}"."{NUMERO}
+CIFRA "-"{FLOAT}|"+"{FLOAT}|"-"{NUMERO}|"+"{NUMERO}
+STRHEX "<"[A-Fa-f 0-9]+">"
+STRLITERAL "\("[^\)]+"\)"
+NAMEOBJ "/"[A-Za-z{NUMERO}\+]+
+LETRA [A-Za-z]{1}
+CADENA [A-Za-z]+
+KEY "/"{CADENA}
+INICIO "<<"
+FIN ">>"
+INISTRHEX "<"
+FINSTRHEX ">"
+INIARRAY "["
+FINARRAY "]"
+CONTENIDOSTREAM [0-9 A-Za-z ]+
+OBJ_REF {DIGITO}+" "{DIGITO}+" ""R"
+%%
+<TRAILER>{END} {return END;}
+<TRAILER>{NUMERO} {return NUMERO;}
+<TRAILER>{STARTXREF} {return STARTXREF;}
+<TRAILER>{LETRA} {return LETRA;}
+<TRAILER>{FIN} {return FIN;}
+<TRAILER>{TRAIL} {return TRAIL;}
+<TRAILER>{INICIO} {BEGIN(TRAILERDICT);return INICIO;}
+<TRAILERDICT>{OBJ_REF} {return OBJ_REF;}
+<TRAILERDICT>{FLOAT} {return FLOAT;}
+<TRAILERDICT>{CIFRA} {return CIFRA;}
+<TRAILERDICT>{NUMERO} {return NUMERO;}
+<TRAILERDICT>{INIARRAY} {return INIARRAY;}
+<TRAILERDICT>{FINARRAY} {return FINARRAY;} 
+<TRAILERDICT>{FIN} {BEGIN(TRAILER);return FIN;}
+<TRAILERDICT>{KEY} {return KEY;}
+<TRAILERDICT>{INICIO} {return INICIO;}
+<OBJECT>{INICIO} {return INICIO;}
+<OBJECT>{FIN} {return FIN;}
+<OBJECT>{NAMEOBJ} {return NAMEOBJ;}
+<OBJECT>{FLOAT} {return FLOAT;}
+<OBJECT>{CIFRA} {return CIFRA;}
+<OBJECT>{NUMERO} {return NUMERO;}
+<OBJECT>{BOOL} {return BOOL;}
+<OBJECT>{KEY} {return KEY;}
+<OBJECT>{ENDOBJ} {BEGIN(INITIAL);return ENDOBJ;}
+<OBJECT>{STR} {BEGIN(STREAM);return STR;}
+<OBJECT>{STRLITERAL} {return STRLITERAL;}
+<OBJECT>{STRHEX} {return STRHX;}
+<OBJECT>{INIARRAY} {return FINARRAY;}
+<OBJECT>{FINARRAY} {return FINARRAY;} 
+<OBJECT>{OBJ_REF} {return OBJ_REF;}
+<STREAM>{ENDSTR} {BEGIN(OBJECT);return ENDSTR;}
+<STREAM>{CONTENIDOSTREAM} {yylval.valString = strdup(yytext);return CONTENIDOSTREAM;}
+<COM>\n {BEGIN(INITIAL);return ENDCOMMENT;}
+<COM>. {}
+{COMMENT} {BEGIN(COM);return COMMENT;}	
+{NUMERO} {yylval.valInt = atoi(yytext); return NUMERO;}
+{OBJ} {BEGIN(OBJECT);return OBJ;}
+{XREF} {BEGIN(TRAILER);return XREF;}
+\n {}
+" " {}
+\t {}
+. {}
+%%
