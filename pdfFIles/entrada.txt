@@ -4,7 +4,7 @@
 
 1 0 obj
 <<
-  /Lang 11
+  /Lang (Es-es)
   /Type /Catalog
 >>
 endobj
@@ -16,8 +16,7 @@ endobj
   /Producer /prod
 >>
 stream
-fadfadfafds esto es un texto de prueba
-penespenes 
+fadfadfafds esto es un texto de prueba 
 endstream
 endobj
 
@@ -28,7 +27,7 @@ endobj
   /Producer /prod
 >>
 stream
-esto es un texto de prueba 
+fadfadfafds esto es un texto de prueba 
 endstream
 endobj
 2 0 obj
@@ -38,7 +37,7 @@ endobj
   /Producer /prod
 >>
 stream
- esto es un texto de prueba a
+fadfadfafds esto es un texto de prueba a
 endstream
 endobj
 2 0 obj
@@ -48,8 +47,7 @@ endobj
   /Producer /prod
 >>
 stream
-esto es un texto de prueba b
-fasdfasd
+fadfadfafds esto es un texto de prueba b
 endstream
 endobj
 2 0 obj
@@ -59,7 +57,7 @@ endobj
   /Producer /prod
 >>
 stream
-esto es un texto de prueba 2
+fadfadfafds esto es un texto de prueba 2
 endstream
 endobj
 xref
